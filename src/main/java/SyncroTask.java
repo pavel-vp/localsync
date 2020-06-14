@@ -26,7 +26,7 @@ public class SyncroTask implements Runnable {
             case "ENTRY_MODIFY":
                 System.out.println("copying="+filePath.toFile()+" to "+directoryTo.toFile());
                 if (Files.isSymbolicLink(filePath)) {
-                    Files.createLink(directoryTo.resolve(filePath.getFileName()), Files.readSymbolicLink(filePath));
+                    Files.createSymbolicLink(directoryTo.resolve(filePath.getFileName()), Files.readSymbolicLink(filePath));
                 } else {
                     FileUtils.copyFileToDirectory(filePath.toFile(), directoryTo.toFile());
                 }

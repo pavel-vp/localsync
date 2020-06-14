@@ -1,5 +1,6 @@
 import org.apache.commons.io.FileUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,7 +25,13 @@ public class SyncService {
         // delete pathTo directory
         FileUtils.deleteDirectory(pathTo.toFile());
         // initial copy of all files from pathFrom to pathTo
-        FileUtils.copyDirectory(pathFrom.toFile(), pathTo.toFile());
+        for (final File fileEntry : pathFrom.toFile().listFiles()) {
+            map.put(fileEntry.getAbsolutePath(), "ENTRY_CREATE");
+            // call sync
+            submit(new SyncroTask(this,  "ENTRY_CREATE", Paths.get(fileEntry.toURI()), pathTo));
+        }
+
+        // TODO: wait initial copy task to complete
 
         // infinite loop for watcher
         WatchService watchService = FileSystems.getDefault().newWatchService();
